@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: local-products-service
+server:
+  port: 8080

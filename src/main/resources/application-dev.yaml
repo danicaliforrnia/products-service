@@ -1,2 +1,5 @@
+spring:
+  application:
+    name: dev-products-service
 server:
   port: ${port:9090}
