@@ -1,5 +1,9 @@
 spring:
   application:
     name: dev-products-service
+  datasource:
+    url: jdbc:postgresql://${database_host:localhost}:5432/postgres
+    username: ${database_username:postgres}
+    password: ${database_password}
 server:
   port: ${port:9090}
