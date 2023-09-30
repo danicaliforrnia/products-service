@@ -7,11 +7,9 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ReadProductDto {
+public class ReadCategoryDto {
+
     private Long id;
     private String name;
     private String description;
-    private Double price;
-    private ReadCategoryDto category;
-    private ReadProductDetailsDto productDetails;
 }

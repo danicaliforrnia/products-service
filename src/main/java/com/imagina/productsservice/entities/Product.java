@@ -24,10 +24,10 @@ public class Product {
     @Column(name = "price")
     private Double price;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
-    @OneToOne(mappedBy = "product")
+    @OneToOne(mappedBy = "product", fetch = FetchType.LAZY)
     private ProductDetails productDetails;
 }
