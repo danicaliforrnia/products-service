@@ -25,4 +25,8 @@ public class InputProductDto {
     @NotNull(message = "price can not be null")
     @Positive(message = "price must be a positive number")
     private Double price;
+
+    @NotNull(message = "category can not be null")
+    @Positive(message = "category must be a positive number")
+    private Long category;
 }

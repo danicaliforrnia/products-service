@@ -21,7 +21,7 @@ public class ProductsController {
     @GetMapping(produces = "application/json")
     public List<ReadProductDto> findAll(@RequestParam(name = "name", required = false) String name,
                                         @RequestParam(name = "size", required = false, defaultValue = "5") String size) {
-        return productsService.findAll(name, Integer.parseInt(size));
+        return productsService.findAll(name);
     }
 
     @GetMapping(path = "{id}", produces = "application/json")

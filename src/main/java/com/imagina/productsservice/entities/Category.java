@@ -5,12 +5,14 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity
-@Table(name = "product")
+@Table(name = "category")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Product {
+public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -21,13 +23,7 @@ public class Product {
     @Column(name = "description")
     private String description;
 
-    @Column(name = "price")
-    private Double price;
+    @OneToMany(mappedBy = "category")
+    private List<Product> products;
 
-    @ManyToOne
-    @JoinColumn(name = "category_id", nullable = false)
-    private Category category;
-
-    @OneToOne(mappedBy = "product")
-    private ProductDetails productDetails;
 }

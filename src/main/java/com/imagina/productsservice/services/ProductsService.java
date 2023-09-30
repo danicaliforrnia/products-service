@@ -2,65 +2,81 @@ package com.imagina.productsservice.services;
 
 import com.imagina.productsservice.dtos.InputProductDto;
 import com.imagina.productsservice.dtos.ReadProductDto;
+import com.imagina.productsservice.entities.Category;
+import com.imagina.productsservice.entities.Product;
+import com.imagina.productsservice.exceptions.CategoryNotFoundException;
 import com.imagina.productsservice.exceptions.ProductNotFoundException;
+import com.imagina.productsservice.repositories.CategoryRepository;
+import com.imagina.productsservice.repositories.ProductsRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class ProductsService {
-    List<ReadProductDto> products = new ArrayList<>(
-            List.of(
-                    new ReadProductDto(1L, "iPhone 15", "New iPhone 15 1TB", 1500D),
-                    new ReadProductDto(2L, "iPhone 13 pro MAX", "iPhone 13 pro MAX 1TB", 1300D),
-                    new ReadProductDto(3L, "Nintendo Switch OLED", "Nitendo Switch OLED Version", 300D),
-                    new ReadProductDto(4L, "1984 - George Orwell", "George Orwell book", 20D)
-            )
-    );
 
-    public List<ReadProductDto> findAll(String name, int size) {
-        var productsFiltered = products;
+    private final ProductsRepository productsRepository;
+
+    private final CategoryRepository categoryRepository;
+
+    private final ModelMapper modelMapper;
+
+    public ProductsService(ProductsRepository productsRepository, CategoryRepository categoryRepository, ModelMapper modelMapper) {
+        this.productsRepository = productsRepository;
+        this.categoryRepository = categoryRepository;
+        this.modelMapper = modelMapper;
+    }
+
+    public List<ReadProductDto> findAll(String name) {
+        List<Product> productsFiltered;
 
         if (name != null && !name.isEmpty()) {
-            productsFiltered = products
-                    .stream()
-                    .filter(product -> product.getName().toLowerCase().contains(name.toLowerCase())).collect(Collectors.toList());
+            productsFiltered = productsRepository.findByName(name);
+        } else {
+            productsFiltered = productsRepository.findAll();
         }
 
-        if (productsFiltered.size() > size) {
-            return productsFiltered.subList(0, size);
-        }
-
-        return productsFiltered;
+        return productsFiltered.stream().map(product -> modelMapper.map(product, ReadProductDto.class)).collect(Collectors.toList());
     }
 
     public ReadProductDto findById(Long id) {
-        return products.stream().filter(product -> product.getId().equals(id)).findFirst()
-                .orElseThrow(ProductNotFoundException::new);
+        return modelMapper.map(
+                productsRepository.findById(id).orElseThrow(ProductNotFoundException::new),
+                ReadProductDto.class
+        );
     }
 
     public ReadProductDto create(InputProductDto inputProductDto) {
-        var newProduct = new ReadProductDto();
-        newProduct.setId(System.currentTimeMillis());
-        newProduct.setName(inputProductDto.getName());
-        newProduct.setDescription(inputProductDto.getDescription());
-        newProduct.setPrice(inputProductDto.getPrice());
-        products.add(newProduct);
-        return newProduct;
+        var product = modelMapper.map(inputProductDto, Product.class);
+        product.setCategory(findCategory(inputProductDto.getCategory()));
+        productsRepository.save(product);
+        return modelMapper.map(product, ReadProductDto.class);
     }
 
     public ReadProductDto update(Long id, InputProductDto inputProductDto) {
-        var product = findById(id);
-        product.setName(inputProductDto.getName());
-        product.setDescription(inputProductDto.getDescription());
-        product.setPrice(inputProductDto.getPrice());
-        return product;
+        var product = findEntityById(id);
+        modelMapper.map(inputProductDto, product);
+        product.setCategory(findCategory(inputProductDto.getCategory()));
+        productsRepository.save(product);
+        return modelMapper.map(product, ReadProductDto.class);
     }
 
     public void delete(Long id) {
-        var product = findById(id);
-        products.remove(product);
+        productsRepository.findById(id).ifPresentOrElse(productsRepository::delete, () -> {
+            throw new ProductNotFoundException();
+        });
+    }
+
+    private Product findEntityById(Long id) {
+        return productsRepository.findById(id).orElseThrow(ProductNotFoundException::new);
+    }
+
+    private Category findCategory(Long id) {
+        return categoryRepository.findById(id).orElseThrow(
+                CategoryNotFoundException::new
+        );
     }
 }
