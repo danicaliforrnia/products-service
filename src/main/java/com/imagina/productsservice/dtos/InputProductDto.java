@@ -17,6 +17,10 @@ public class InputProductDto {
     @Size(min = 2, max = 50, message = "name must have from 2 to 50 characters")
     private String name;
 
+    @NotNull(message = "code can not be null")
+    @Positive(message = "code must be a positive number")
+    private Integer code;
+
     @NotNull(message = "description can not be null")
     @NotBlank(message = "description can not be empty")
     @Size(min = 2, max = 200, message = "description must have from 2 to 200 characters")
