@@ -10,6 +10,7 @@ import com.imagina.productsservice.repositories.CategoryRepository;
 import com.imagina.productsservice.repositories.ProductsRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,6 +30,7 @@ public class ProductsService {
         this.modelMapper = modelMapper;
     }
 
+    @Transactional(readOnly = true)
     public List<ReadProductDto> findAll(String name) {
         List<Product> productsFiltered;
 
@@ -48,6 +50,7 @@ public class ProductsService {
         );
     }
 
+    @Transactional
     public ReadProductDto create(InputProductDto inputProductDto) {
         var product = modelMapper.map(inputProductDto, Product.class);
         product.setCategory(findCategory(inputProductDto.getCategory()));
@@ -55,6 +58,7 @@ public class ProductsService {
         return modelMapper.map(product, ReadProductDto.class);
     }
 
+    @Transactional
     public ReadProductDto update(Long id, InputProductDto inputProductDto) {
         var product = findProductById(id);
         modelMapper.map(inputProductDto, product);
@@ -63,6 +67,7 @@ public class ProductsService {
         return modelMapper.map(product, ReadProductDto.class);
     }
 
+    @Transactional
     public void delete(Long id) {
         productsRepository.findById(id).ifPresentOrElse(productsRepository::delete, () -> {
             throw new ProductNotFoundException();
