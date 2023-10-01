@@ -9,6 +9,8 @@ import com.imagina.productsservice.exceptions.ProductNotFoundException;
 import com.imagina.productsservice.repositories.CategoryRepository;
 import com.imagina.productsservice.repositories.ProductsRepository;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,16 +33,17 @@ public class ProductsService {
     }
 
     @Transactional(readOnly = true)
-    public List<ReadProductDto> findAll(String name) {
-        List<Product> productsFiltered;
+    public Page<ReadProductDto> findAll(String name, int page, int size) {
+        Page<Product> productsFiltered;
+        var pageable = PageRequest.of(page, size);
 
         if (name != null && !name.isEmpty()) {
-            productsFiltered = productsRepository.findAllByNameContainingIgnoreCase(name);
+            productsFiltered = productsRepository.findAllByNameContainingIgnoreCase(name, pageable);
         } else {
-            productsFiltered = productsRepository.findAll();
+            productsFiltered = productsRepository.findAll(pageable);
         }
 
-        return productsFiltered.stream().map(product -> modelMapper.map(product, ReadProductDto.class)).collect(Collectors.toList());
+        return productsFiltered.map(product -> modelMapper.map(product, ReadProductDto.class));
     }
 
     @Transactional(readOnly = true)
