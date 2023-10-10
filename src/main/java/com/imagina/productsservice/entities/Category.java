@@ -15,10 +15,10 @@ import java.util.Objects;
 @NoArgsConstructor
 public class Category extends BaseEntity {
 
-    @Column(name = "name")
+    @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "description")
+    @Column(name = "description", nullable = false)
     private String description;
 
     @OneToMany(mappedBy = "category")
