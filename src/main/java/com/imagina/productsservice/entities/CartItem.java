@@ -15,8 +15,6 @@ import java.util.Objects;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CartItem extends BaseEntity {
-    @Column(name = "name")
-    private String name;
 
     @Column(name = "units")
     private Integer units;
