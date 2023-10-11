@@ -12,6 +12,7 @@ public class ReadProductDto {
     private String name;
     private Integer code;
     private String description;
+    private Integer units;
     private Double price;
     private ReadCategoryDto category;
     private ReadProductDetailsDto productDetails;

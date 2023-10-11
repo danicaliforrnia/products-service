@@ -26,6 +26,10 @@ public class InputProductDto {
     @Size(min = 2, max = 200, message = "description must have from 2 to 200 characters")
     private String description;
 
+    @NotNull(message = "units can not be null")
+    @Positive(message = "units must be a positive number")
+    private Integer units;
+
     @NotNull(message = "price can not be null")
     @Positive(message = "price must be a positive number")
     private Double price;
