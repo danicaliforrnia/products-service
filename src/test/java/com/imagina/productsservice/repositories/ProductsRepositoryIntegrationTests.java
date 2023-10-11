@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @Transactional(propagation = Propagation.NOT_SUPPORTED)
 public class ProductsRepositoryIntegrationTests {
     Category category = new Category(1L, "CategoryA", "categoryA description");
-    Product product = new Product(1L, "productA", 1000, "productA description", 200D, category, null);
+    Product product = new Product(1L, "productA", 1000, "productA description", 10, 200D, category, null);
 
     @Autowired
     private ProductsRepository productsRepository;
