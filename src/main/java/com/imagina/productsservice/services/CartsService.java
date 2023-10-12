@@ -1,11 +1,12 @@
 package com.imagina.productsservice.services;
 
+import com.imagina.productsservice.clients.OrdersServiceClient;
 import com.imagina.productsservice.dtos.InputCartDto;
+import com.imagina.productsservice.dtos.InputOrderDto;
+import com.imagina.productsservice.dtos.InputOrderItemDto;
 import com.imagina.productsservice.dtos.ReadCartDto;
-import com.imagina.productsservice.dtos.ReadProductDto;
 import com.imagina.productsservice.entities.Cart;
 import com.imagina.productsservice.entities.CartItem;
-import com.imagina.productsservice.entities.Product;
 import com.imagina.productsservice.enums.CartStatus;
 import com.imagina.productsservice.exceptions.CartExistsException;
 import com.imagina.productsservice.exceptions.CartNotFoundException;
@@ -28,10 +29,13 @@ public class CartsService {
 
     private final ModelMapper modelMapper;
 
-    public CartsService(CartRepository cartRepository, ProductsRepository productsRepository, ModelMapper modelMapper) {
+    private final OrdersServiceClient ordersServiceClient;
+
+    public CartsService(CartRepository cartRepository, ProductsRepository productsRepository, ModelMapper modelMapper, OrdersServiceClient ordersServiceClient) {
         this.cartRepository = cartRepository;
         this.productsRepository = productsRepository;
         this.modelMapper = modelMapper;
+        this.ordersServiceClient = ordersServiceClient;
     }
 
     public ReadCartDto findByUserAndStatus(Long userId) {
@@ -79,7 +83,12 @@ public class CartsService {
         cartRepository.save(cart);
 
         if (cart.getStatus().equals(CartStatus.PROCESSED)) {
-            // Crear Pedido
+            var inputOrderDto = new InputOrderDto("test", "test", "test", new ArrayList<>());
+            cart.getCartItems().forEach(cartItem -> {
+                var inputOrderItemDto = new InputOrderItemDto(cartItem.getProduct().getName(), cartItem.getUnits(), cartItem.getProduct().getPrice());
+                inputOrderDto.getOrderItems().add(inputOrderItemDto);
+            });
+            ordersServiceClient.createOrder(inputOrderDto);
         }
     }
 }
