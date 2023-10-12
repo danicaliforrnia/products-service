@@ -6,7 +6,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-@FeignClient(name = "orders-service", path = "/orders-service/api/orders")
+@FeignClient(name = "orders-service", path = "/api/orders")
 public interface OrdersServiceClient {
 
     @PostMapping(consumes = "application/json", produces = "application/json")
