@@ -16,6 +16,7 @@ import com.imagina.productsservice.producers.MessageProducer;
 import com.imagina.productsservice.repositories.CartRepository;
 import com.imagina.productsservice.repositories.ProductsRepository;
 import org.modelmapper.ModelMapper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -75,6 +76,7 @@ public class CartsService {
         return modelMapper.map(cart, ReadCartDto.class);
     }
 
+    @Async
     public void updateStatus(Long cartId, CartStatus cartStatus) {
         var cart = cartRepository.findById(cartId).orElseThrow(CartNotFoundException::new);
 
