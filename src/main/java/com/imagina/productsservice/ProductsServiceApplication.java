@@ -9,7 +9,6 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @SpringBootApplication
 @EnableFeignClients
 @EnableCaching
-@EnableAsync
 public class ProductsServiceApplication {
 
 	public static void main(String[] args) {
