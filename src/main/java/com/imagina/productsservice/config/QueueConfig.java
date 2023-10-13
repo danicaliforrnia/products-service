@@ -22,13 +22,13 @@ public class QueueConfig {
     public Declarables createPurchasesSchema() {
         return new Declarables(
                 new FanoutExchange("x.post-purchases"),
-                new Queue("q.send-emails", false),
+                new Queue("q.send-email", false),
                 new Queue("q.send-sms", false),
                 new Binding(
-                        "q.send-emails",
+                        "q.send-email",
                         Binding.DestinationType.QUEUE,
                         "x.post-purchases",
-                        "send-eamils",
+                        "send-email",
                         null
                 ),
                 new Binding(
