@@ -24,7 +24,7 @@ public class Cart extends BaseEntity {
     @Column(name = "status", nullable = false)
     private CartStatus status;
 
-    @OneToMany(mappedBy = "cart", orphanRemoval = true, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "cart", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<CartItem> cartItems;
 
     @Override
