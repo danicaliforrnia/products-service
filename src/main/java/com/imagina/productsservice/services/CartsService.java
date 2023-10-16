@@ -12,6 +12,7 @@ import com.imagina.productsservice.exceptions.CartExistsException;
 import com.imagina.productsservice.exceptions.CartNotFoundException;
 import com.imagina.productsservice.exceptions.CartNotOpenedException;
 import com.imagina.productsservice.exceptions.ProductNotFoundException;
+import com.imagina.productsservice.models.EmailData;
 import com.imagina.productsservice.producers.MessageProducer;
 import com.imagina.productsservice.repositories.CartRepository;
 import com.imagina.productsservice.repositories.ProductsRepository;
@@ -21,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class CartsService {
@@ -97,7 +99,11 @@ public class CartsService {
                 inputOrderDto.getOrderItems().add(inputOrderItemDto);
             });
             ordersServiceClient.createOrder(inputOrderDto);
-            messageProducer.sendMessage("x.post-purchases", "", inputOrderDto);
+            EmailData emailData = new EmailData("user@gmail.com", "Compra Realizada", "order");
+            messageProducer.sendMessage("x.post-purchases", "", Map.of(
+                    "templateData", inputOrderDto,
+                    "emailData", emailData
+            ));
         }
     }
 }
