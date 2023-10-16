@@ -40,9 +40,20 @@ services:
     networks:
       - rabbitmq-network
 
+  smtp4dev:
+    image: rnwood/smtp4dev:v3
+    restart: always
+    ports:
+      - '5080:80'
+      - '25:25'
+      - '143:143'
+    volumes:
+      - smtp4dev-data:/smtp4dev
+
 volumes:
   postgres_data:
   mongo_data:
+  smtp4dev-data:
 networks:
   pg-network:
   rabbitmq-network:
