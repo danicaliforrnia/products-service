@@ -57,7 +57,7 @@ public class ProductsService {
     }
 
     public ReadProductDto update(Long id, InputProductDto inputProductDto) {
-        var product = findEntityById(id);
+        var product = findProductById(id);
         modelMapper.map(inputProductDto, product);
         product.setCategory(findCategory(inputProductDto.getCategory()));
         productsRepository.save(product);
@@ -70,7 +70,7 @@ public class ProductsService {
         });
     }
 
-    private Product findEntityById(Long id) {
+    private Product findProductById(Long id) {
         return productsRepository.findById(id).orElseThrow(ProductNotFoundException::new);
     }
 
