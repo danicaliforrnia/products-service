@@ -10,3 +10,9 @@ spring:
       uri: mongodb://${mongodb_host:localhost}:27017/products
 server:
   port: ${port:9090}
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_URL:http://localhost:8761/eureka}
+  instance:
+    preferIpAddress: true
