@@ -1,8 +1,16 @@
 spring:
   application:
     name: products-service
+info:
+  app:
+    name: Products Service
+    description: API for products and shopping carts
 server:
   servlet:
     contextPath: /api
   error:
     include-stacktrace: never
+eureka:
+  instance:
+    statusPageUrlPath: ${server.servlet.contextPath}/actuator/info
+    healthCheckUrlPath: ${server.servlet.contextPath}/actuator/health
