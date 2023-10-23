@@ -3,4 +3,6 @@ spring:
     name: products-service
 server:
   servlet:
-    contextPath: /products-service/api/v1
+    contextPath: /products-service/api
+  error:
+    include-stacktrace: never
