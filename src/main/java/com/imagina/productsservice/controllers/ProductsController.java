@@ -4,6 +4,7 @@ import com.imagina.productsservice.dtos.InputProductDto;
 import com.imagina.productsservice.dtos.ReadProductDto;
 import com.imagina.productsservice.services.ProductsService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,9 +20,10 @@ public class ProductsController {
     }
 
     @GetMapping(produces = "application/json")
-    public List<ReadProductDto> findAll(@RequestParam(name = "name", required = false) String name,
+    public Page<ReadProductDto> findAll(@RequestParam(name = "name", required = false) String name,
+                                        @RequestParam(name = "page", required = false, defaultValue = "0") String page,
                                         @RequestParam(name = "size", required = false, defaultValue = "5") String size) {
-        return productsService.findAll(name);
+        return productsService.findAll(name, Integer.parseInt(page), Integer.parseInt(size));
     }
 
     @GetMapping(path = "{id}", produces = "application/json")
