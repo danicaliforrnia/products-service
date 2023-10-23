@@ -12,6 +12,7 @@ import com.imagina.productsservice.exceptions.CartExistsException;
 import com.imagina.productsservice.exceptions.CartNotFoundException;
 import com.imagina.productsservice.exceptions.CartNotOpenedException;
 import com.imagina.productsservice.exceptions.ProductNotFoundException;
+import com.imagina.productsservice.producers.MessageProducer;
 import com.imagina.productsservice.repositories.CartRepository;
 import com.imagina.productsservice.repositories.ProductsRepository;
 import org.modelmapper.ModelMapper;
@@ -31,11 +32,14 @@ public class CartsService {
 
     private final OrdersServiceClient ordersServiceClient;
 
-    public CartsService(CartRepository cartRepository, ProductsRepository productsRepository, ModelMapper modelMapper, OrdersServiceClient ordersServiceClient) {
+    private final MessageProducer messageProducer;
+
+    public CartsService(CartRepository cartRepository, ProductsRepository productsRepository, ModelMapper modelMapper, OrdersServiceClient ordersServiceClient, MessageProducer messageProducer) {
         this.cartRepository = cartRepository;
         this.productsRepository = productsRepository;
         this.modelMapper = modelMapper;
         this.ordersServiceClient = ordersServiceClient;
+        this.messageProducer = messageProducer;
     }
 
     public ReadCartDto findByUserAndStatus(Long userId) {
@@ -89,6 +93,7 @@ public class CartsService {
                 inputOrderDto.getOrderItems().add(inputOrderItemDto);
             });
             ordersServiceClient.createOrder(inputOrderDto);
+            messageProducer.sendMessage("x.post-purchases", "", inputOrderDto);
         }
     }
 }
