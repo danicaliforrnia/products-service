@@ -16,8 +16,8 @@ import com.imagina.productsservice.producers.MessageProducer;
 import com.imagina.productsservice.repositories.CartRepository;
 import com.imagina.productsservice.repositories.ProductsRepository;
 import org.modelmapper.ModelMapper;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +43,7 @@ public class CartsService {
         this.messageProducer = messageProducer;
     }
 
+    @Transactional(readOnly = true)
     public ReadCartDto findByUserAndStatus(Long userId) {
         return modelMapper.map(
                 cartRepository.findFirstByUserIdAndStatus(userId, CartStatus.OPEN).orElseThrow(CartNotFoundException::new),
@@ -50,6 +51,7 @@ public class CartsService {
         );
     }
 
+    @Transactional
     public ReadCartDto create(Long userId, InputCartDto inputCartDto) {
         if (cartRepository.findFirstByUserIdAndStatus(userId, CartStatus.OPEN).isPresent()) {
             throw new CartExistsException();
@@ -76,7 +78,7 @@ public class CartsService {
         return modelMapper.map(cart, ReadCartDto.class);
     }
 
-    @Async
+    @Transactional
     public void updateStatus(Long cartId, CartStatus cartStatus) {
         var cart = cartRepository.findById(cartId).orElseThrow(CartNotFoundException::new);
 
