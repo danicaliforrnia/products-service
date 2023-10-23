@@ -38,6 +38,7 @@ public class Product extends BaseEntity {
                    String name,
                    Integer code,
                    String description,
+                   Integer units,
                    Double price,
                    Category category,
                    ProductDetails productDetails) {
@@ -45,6 +46,7 @@ public class Product extends BaseEntity {
         this.name = name;
         this.code = code;
         this.description = description;
+        this.units = units;
         this.price = price;
         this.category = category;
         this.productDetails = productDetails;

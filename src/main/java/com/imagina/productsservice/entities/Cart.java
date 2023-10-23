@@ -1,9 +1,7 @@
 package com.imagina.productsservice.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import com.imagina.productsservice.enums.CartStatus;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,7 +20,11 @@ public class Cart extends BaseEntity {
     @Column(name = "user_id", nullable = false)
     private Long userId;
 
-    @OneToMany(mappedBy = "cart")
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    private CartStatus status;
+
+    @OneToMany(mappedBy = "cart", orphanRemoval = true, cascade = CascadeType.ALL)
     private List<CartItem> cartItems;
 
     @Override
