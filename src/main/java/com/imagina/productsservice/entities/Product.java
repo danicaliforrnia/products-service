@@ -12,17 +12,20 @@ import java.util.Objects;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Product extends BaseEntity {
-    @Column(name = "name")
+    @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "code")
+    @Column(name = "code", nullable = false)
     private Integer code;
 
-    @Column(name = "description")
+    @Column(name = "description", nullable = false)
     private String description;
 
-    @Column(name = "price")
+    @Column(name = "price", nullable = false)
     private Double price;
+
+    @Column(name = "units", nullable = false)
+    private Integer units;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
