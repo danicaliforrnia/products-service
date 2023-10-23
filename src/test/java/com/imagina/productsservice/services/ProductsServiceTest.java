@@ -1,9 +1,13 @@
 package com.imagina.productsservice.services;
 
+import com.imagina.productsservice.dtos.InputProductDto;
 import com.imagina.productsservice.dtos.ReadCategoryDto;
 import com.imagina.productsservice.dtos.ReadProductDto;
 import com.imagina.productsservice.entities.Category;
 import com.imagina.productsservice.entities.Product;
+import com.imagina.productsservice.exceptions.CategoryNotFoundException;
+import com.imagina.productsservice.exceptions.ProductNotFoundException;
+import com.imagina.productsservice.repositories.CategoryRepository;
 import com.imagina.productsservice.repositories.ProductsRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,7 +26,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class ProductsServiceTest {
@@ -46,6 +50,13 @@ public class ProductsServiceTest {
             new ReadProductDto(products.get(1).getId(), products.get(1).getName(), products.get(1).getCode(), products.get(1).getDescription(), products.get(1).getPrice(), categoriesDto.get(1), null),
             new ReadProductDto(products.get(2).getId(), products.get(2).getName(), products.get(2).getCode(), products.get(2).getDescription(), products.get(2).getPrice(), categoriesDto.get(2), null)
     );
+    InputProductDto inputProductDto = new InputProductDto(
+            products.get(0).getName(),
+            products.get(0).getCode(),
+            products.get(0).getDescription(),
+            products.get(0).getPrice(),
+            products.get(0).getCategory().getId()
+    );
     int page = 0;
     int size = 5;
 
@@ -54,6 +65,9 @@ public class ProductsServiceTest {
 
     @Mock
     private ProductsRepository productsRepository;
+
+    @Mock
+    private CategoryRepository categoryRepository;
 
     @Mock
     private ModelMapper modelMapper;
@@ -114,6 +128,54 @@ public class ProductsServiceTest {
         assertEquals(product.getName(), productDto.getName());
         assertEquals(product.getCode(), productDto.getCode());
         assertEquals(product.getDescription(), productDto.getDescription());
+    }
+
+    @Test
+    public void shouldCreateProduct() {
+        when(modelMapper.map(ArgumentMatchers.any(InputProductDto.class), ArgumentMatchers.eq(Product.class))).thenReturn(products.get(0));
+        when(categoryRepository.findById(inputProductDto.getCategory())).thenReturn(Optional.of(categories.get(0)));
+        when(productsRepository.save(ArgumentMatchers.any(Product.class))).thenReturn(products.get(0));
+        when(modelMapper.map(ArgumentMatchers.any(Product.class), ArgumentMatchers.eq(ReadProductDto.class))).thenReturn(productsDto.get(0));
+
+        ReadProductDto productDto = productsService.create(inputProductDto);
+
+        verify(productsRepository).save(products.get(0));
+        assertNotNull(productDto);
+        assertEquals(productDto.getName(), inputProductDto.getName());
+        assertEquals(productDto.getCode(), inputProductDto.getCode());
+        assertEquals(productDto.getDescription(), inputProductDto.getDescription());
+    }
+
+    @Test
+    public void shouldThrowCategoryNotFoundExceptionOnCreate() {
+        when(modelMapper.map(ArgumentMatchers.any(InputProductDto.class), ArgumentMatchers.eq(Product.class))).thenReturn(products.get(0));
+        when(categoryRepository.findById(inputProductDto.getCategory())).thenReturn(Optional.empty());
+        assertThrows(CategoryNotFoundException.class, () -> productsService.create(inputProductDto));
+    }
+
+    @Test
+    public void shouldUpdateUser() {
+        when(productsRepository.findById(products.get(0).getId())).thenReturn(Optional.of(products.get(0)));
+        doNothing().when(modelMapper).map(isA(InputProductDto.class), isA(Product.class));
+        when(categoryRepository.findById(inputProductDto.getCategory())).thenReturn(Optional.of(categories.get(0)));
+        when(productsRepository.save(ArgumentMatchers.any(Product.class))).thenReturn(products.get(0));
+        when(modelMapper.map(ArgumentMatchers.any(Product.class), ArgumentMatchers.eq(ReadProductDto.class))).thenReturn(productsDto.get(0));
+
+        ReadProductDto productDto = productsService.update(products.get(0).getId(), inputProductDto);
+
+        verify(productsRepository).findById(products.get(0).getId());
+        verify(productsRepository).save(products.get(0));
+        assertNotNull(productDto);
+        assertEquals(productDto.getName(), inputProductDto.getName());
+        assertEquals(productDto.getCode(), inputProductDto.getCode());
+        assertEquals(productDto.getDescription(), inputProductDto.getDescription());
+    }
+
+    @Test
+    public void shouldThrowProductNotFoundExceptionOnUpdate() {
+        var inputProductDto = new InputProductDto(products.get(0).getName(), products.get(0).getCode(), products.get(0).getDescription(), products.get(0).getPrice(), products.get(0).getCategory().getId());
+        when(productsRepository.findById(products.get(0).getId())).thenReturn(Optional.empty());
+        assertThrows(ProductNotFoundException.class, () -> productsService.update(products.get(0).getId(), inputProductDto));
     }
 
 }
