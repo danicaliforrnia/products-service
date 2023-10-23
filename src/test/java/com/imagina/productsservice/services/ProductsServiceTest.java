@@ -41,19 +41,20 @@ public class ProductsServiceTest {
             new ReadCategoryDto(categories.get(2).getId(), categories.get(2).getName(), categories.get(2).getDescription())
     );
     final List<Product> products = List.of(
-            new Product(1L, "productA", 1000, "productA description", 200D, categories.get(0), null),
-            new Product(2L, "productB", 1001, "productB description", 100D, categories.get(1), null),
-            new Product(3L, "productC", 1002, "productC description", 20D, categories.get(2), null)
+            new Product(1L, "productA", 1000, "productA description", 10, 200D, categories.get(0), null),
+            new Product(2L, "productB", 1001, "productB description", 10, 100D, categories.get(1), null),
+            new Product(3L, "productC", 1002, "productC description", 10, 20D, categories.get(2), null)
     );
     final List<ReadProductDto> productsDto = List.of(
-            new ReadProductDto(products.get(0).getId(), products.get(0).getName(), products.get(0).getCode(), products.get(0).getDescription(), products.get(0).getPrice(), categoriesDto.get(0), null),
-            new ReadProductDto(products.get(1).getId(), products.get(1).getName(), products.get(1).getCode(), products.get(1).getDescription(), products.get(1).getPrice(), categoriesDto.get(1), null),
-            new ReadProductDto(products.get(2).getId(), products.get(2).getName(), products.get(2).getCode(), products.get(2).getDescription(), products.get(2).getPrice(), categoriesDto.get(2), null)
+            new ReadProductDto(products.get(0).getId(), products.get(0).getName(), products.get(0).getCode(), products.get(0).getDescription(), 10, products.get(0).getPrice(), categoriesDto.get(0), null),
+            new ReadProductDto(products.get(1).getId(), products.get(1).getName(), products.get(1).getCode(), products.get(1).getDescription(), 10, products.get(1).getPrice(), categoriesDto.get(1), null),
+            new ReadProductDto(products.get(2).getId(), products.get(2).getName(), products.get(2).getCode(), products.get(2).getDescription(), 10, products.get(2).getPrice(), categoriesDto.get(2), null)
     );
     InputProductDto inputProductDto = new InputProductDto(
             products.get(0).getName(),
             products.get(0).getCode(),
             products.get(0).getDescription(),
+            products.get(0).getUnits(),
             products.get(0).getPrice(),
             products.get(0).getCategory().getId()
     );
@@ -173,7 +174,7 @@ public class ProductsServiceTest {
 
     @Test
     public void shouldThrowProductNotFoundExceptionOnUpdate() {
-        var inputProductDto = new InputProductDto(products.get(0).getName(), products.get(0).getCode(), products.get(0).getDescription(), products.get(0).getPrice(), products.get(0).getCategory().getId());
+        var inputProductDto = new InputProductDto(products.get(0).getName(), products.get(0).getCode(), products.get(0).getDescription(), products.get(0).getUnits(), products.get(0).getPrice(), products.get(0).getCategory().getId());
         when(productsRepository.findById(products.get(0).getId())).thenReturn(Optional.empty());
         assertThrows(ProductNotFoundException.class, () -> productsService.update(products.get(0).getId(), inputProductDto));
     }

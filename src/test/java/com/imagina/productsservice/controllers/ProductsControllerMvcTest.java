@@ -29,9 +29,9 @@ public class ProductsControllerMvcTest {
             new ReadCategoryDto(3L, "CategoryC", "categoryC description")
     );
     final List<ReadProductDto> productsDto = List.of(
-            new ReadProductDto(1L, "productA", 1000, "productA description", 200D, categoriesDto.get(0), null),
-            new ReadProductDto(1L, "productB", 1001, "productB description", 2000D, categoriesDto.get(1), null),
-            new ReadProductDto(1L, "productC", 1002, "productC description", 20D, categoriesDto.get(2), null)
+            new ReadProductDto(1L, "productA", 1000, "productA description", 10, 200D, categoriesDto.get(0), null),
+            new ReadProductDto(1L, "productB", 1001, "productB description", 10, 2000D, categoriesDto.get(1), null),
+            new ReadProductDto(1L, "productC", 1002, "productC description", 10, 20D, categoriesDto.get(2), null)
     );
     int page = 0;
     int size = 5;
