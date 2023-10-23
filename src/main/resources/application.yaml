@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: products-service
+server:
+  servlet:
+    contextPath: /products-service/api/v1
