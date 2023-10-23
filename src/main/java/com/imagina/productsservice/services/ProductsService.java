@@ -35,7 +35,7 @@ public class ProductsService {
         List<Product> productsFiltered;
 
         if (name != null && !name.isEmpty()) {
-            productsFiltered = productsRepository.findByName(name);
+            productsFiltered = productsRepository.findAllByNameContainingIgnoreCase(name);
         } else {
             productsFiltered = productsRepository.findAll();
         }
@@ -43,6 +43,7 @@ public class ProductsService {
         return productsFiltered.stream().map(product -> modelMapper.map(product, ReadProductDto.class)).collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public ReadProductDto findById(Long id) {
         return modelMapper.map(
                 productsRepository.findById(id).orElseThrow(ProductNotFoundException::new),
