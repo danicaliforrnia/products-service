@@ -5,5 +5,8 @@ spring:
     url: jdbc:postgresql://${database_host:localhost}:5432/postgres
     username: ${database_username:postgres}
     password: ${database_password}
+  data:
+    mongodb:
+      uri: mongodb://${mongodb_host:localhost}:27017/products
 server:
   port: ${port:9090}
