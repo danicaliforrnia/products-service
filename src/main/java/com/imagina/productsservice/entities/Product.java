@@ -31,6 +31,22 @@ public class Product extends BaseEntity {
     @OneToOne(mappedBy = "product", fetch = FetchType.LAZY)
     private ProductDetails productDetails;
 
+    public Product(Long id,
+                   String name,
+                   Integer code,
+                   String description,
+                   Double price,
+                   Category category,
+                   ProductDetails productDetails) {
+        super.setId(id);
+        this.name = name;
+        this.code = code;
+        this.description = description;
+        this.price = price;
+        this.category = category;
+        this.productDetails = productDetails;
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(code);

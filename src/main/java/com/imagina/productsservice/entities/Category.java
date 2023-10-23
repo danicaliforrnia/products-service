@@ -3,6 +3,7 @@ package com.imagina.productsservice.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -22,6 +23,13 @@ public class Category extends BaseEntity {
 
     @OneToMany(mappedBy = "category")
     private List<Product> products;
+
+    public Category(Long id, String name, String description) {
+        super.setId(id);
+        this.name = name;
+        this.description = description;
+        products = new ArrayList<>();
+    }
 
     @Override
     public int hashCode() {
